@@ -1,0 +1,120 @@
+<?php
+//koneksi database
+$server = "localhost";
+$user = "root";
+$pass = "mayzke";
+$database = "dblatihan";
+
+$koneksi = mysqli_connect($server, $user, $pass, $database)or die(mysqli_error($koneksi));
+//jika tombol simpan di klik
+if(isset($_POST['bsimpan']))
+{
+    $simpan = mysqli_query($koneksi, "INSERT INTO tmhs (nim, nama, asal, dosen_pa) 
+                                      VALUES ('$_POST[tnim]', 
+                                             '$_POST[tnama]', 
+                                             '$_POST[tasal]',
+                                             '$_POST[tnamadosenpa]')
+                                        ");
+    if($simpan)//jika simpan sukses
+    {
+        echo "<script>
+                alert('Simpan data sukses');
+                document.location='index.php';
+        </script>";
+    }
+    else
+    {
+        echo "<script>
+        alert('Simpan data gagal!');
+        document.location='index.php';
+</script>";
+    }
+}
+?>
+
+<!DOCTYPE html>
+<html lang="en"> 
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>mywebsite</title>
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center mt-4">DATA MAHASISWA PENDIDIKAN TEKNOLOGI INFORMASI</h1>
+        <h1 class="text-center">UNIVERSITAS BRAWIJAYA</h1>
+        <h2 class="text-center">ANGKATAN 2020</h2>
+        <!---awal card form--->
+        <div class="card mt-4">
+        <div class="card-header bg-primary text-white">
+            Form Input Data Mahasiswa PTI
+        </div>
+        <div class="card-body">
+            <form method="post" action="">
+                <div class="form-group">
+                    <label>NIM</label>
+                    <input type="text" name="tnim" class="form-control" placeholder="Input NIM Anda disini!" required>
+                </div>
+                <div class="form-group">
+                    <label>NAMA</label>
+                    <input type="text" name="tnama" class="form-control" placeholder="Input NAMA Anda disini!" required>
+                </div>
+                <div class="form-group">
+                    <label>ASAL</label>
+                    <input type="text" name="tasal" class="form-control" placeholder="Input ASAL Anda disini!" required>
+                </div>
+                <div class="form-group">
+                    <label>DOSEN PEMBIMBING AKADEMIK</label>
+                    <input type="text" name="tnamadosenpa" class="form-control" placeholder="Input NAMA DOSEN PA Anda disini!" required>
+                </div>
+                <button type="submit" class="btn btn-success mt-3" name="bsimpan">SIMPAN</button>
+                <button type="reset" class="btn btn-danger mt-3" name="breset">KOSONGKAN</button>
+            </form>
+            
+        </div>
+        </div>
+        <!---akhir card form--->
+
+        <!---awal card tabel--->
+        <div class="card mt-4">
+        <div class="card-header bg-success text-white">
+            Data Mahasiswa PTI Angkatan 2020
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered table-striped">
+                <tr>
+                    <th>NO.</th>
+                    <th>NIM</th>
+                    <th>NAMA</th>
+                    <th>ASAL</th>
+                    <th>DOSEN PA</th>
+                    <th>Keterangan</th>
+                </tr>
+                <?php
+                    $no = 1;
+                    $tampil = mysqli_query($koneksi, "SELECT * FROM tmhs order by id_mhs desc");
+                    while($data = mysqli_fetch_array($tampil)) : 
+                ?>
+                <tr>
+                    <td><?=$no++;?></td>
+                    <td><?=$data['nim']?></td>
+                    <td><?=$data['nama']?></td>
+                    <td><?=$data['asal']?></td>
+                    <td><?=$data['dosen_pa']?></td>
+                    <td>
+                        <a href="#" class="btn btn-warning">Edit</a>
+                        <a href="#" class="btn btn-danger">Hapus</a>
+                    </td>
+                </tr>
+                <?php endwhile;//penutup perulangan while ?>
+            </table>
+            
+        </div>
+        </div>
+        <!---akhir card tabel--->
+    </div>
+<script type="text/javascript" src="js/bootstrap.min.js"></script>
+</body>
+</html>
